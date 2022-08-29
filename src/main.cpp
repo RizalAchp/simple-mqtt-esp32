@@ -13,12 +13,12 @@ WiFiClient espClient;
 // membuat client object untuk mqtt
 PubSubClient client(MQTT_SERVER, MQTT_PORT, callback, espClient);
 
+int status_led[JUMLAH_LED] = {0, 0, 0, 0, 0, 0};
+
 void setup()
 {
   /// macro untuk begin serial
   DEBUG_INIT(115200);
-
-  setup_wifi();
 
   /// change mode each pin to output
   for (size_t i = 0; i < JUMLAH_LED; i++)
@@ -28,13 +28,16 @@ void setup()
   }
   pinMode(TRIG_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
+
+  setup_wifi();
+
+  if (!client.connected())
+    reconnect_mqtt_server();
 }
 
 unsigned long millis_done = 0;
 void loop()
 {
-  while (!client.connected())
-    reconnect_mqtt_server();
   if (client.loop())
   {
     auto mill = millis();
@@ -43,9 +46,13 @@ void loop()
       char buff[8];
       utoa(baca_jarak_hcsr(), buff, 10);
       client.publish("MQTT_YUTUB_ESP32/jarak", (const uint8_t *)buff, sizeof(buff), false);
-      
+
       millis_done = mill;
     }
+  }
+  else
+  {
+    reconnect_mqtt_server();
   }
 }
 
@@ -79,48 +86,50 @@ void callback(char *topic, byte *message, unsigned int length)
   {
     char *msg = (char *)malloc(length);
     memcpy(msg, message, length);
-    uint8_t status_led[JUMLAH_LED] = {0, 0, 0, 0, 0, 0};
-    if (!(sscanf(msg, "[%d,%d,%d,%d,%d,%d]",
-                 &status_led[0],
-                 &status_led[1],
-                 &status_led[2],
-                 &status_led[3],
-                 &status_led[4],
-                 &status_led[5]) == JUMLAH_LED))
-      return;
-    PRINT(F("msg arrived no topic: "));
-    PRINTLN(topic);
-    PRINT(F("status: "));
-    PRINTLN(msg);
-
-    for (size_t i = 0; i < JUMLAH_LED; i++)
+    if (sscanf(msg, "[%d,%d,%d,%d,%d,%d]",
+               &status_led[0],
+               &status_led[1],
+               &status_led[2],
+               &status_led[3],
+               &status_led[4],
+               &status_led[5]) == JUMLAH_LED)
     {
-      digitalWrite(ledPin[i], status_led[i]);
+      PRINT(F("msg arrived no topic: "));
+      PRINTLN(topic);
+      PRINT(F("status: "));
+      PRINTLN(msg);
+
+      for (size_t i = 0; i < JUMLAH_LED; i++)
+      {
+        digitalWrite(ledPin[i], status_led[i]);
+      }
+      client.publish("MQTT_YUTUB_ESP32/led_output", msg, length);
     }
-    client.publish("MQTT_YUTUB_ESP32/led_output", msg, length);
     free(msg);
   }
 }
 
 void reconnect_mqtt_server()
 {
-  // Loop until we're reconnected
-  PRINT(F("mencoba menyambungkan pada MQTT server..."));
-  // Attempt to connect
-  if (client.connect("ESP32_YUTUB_IOT"))
+  while (!client.connected())
   {
-    PRINTLN(F("tersambung!"));
-    // Subscribe
-    client.subscribe("MQTT_YUTUB_ESP32/led_input");
-    client.publish("MQTT_YUTUB_ESP32/led_output", "[0,0,0,0,0,0]");
-  }
-  else
-  {
-    PRINT(F("gagal tersambung pada MQTT server!, rc="));
-    PRINT(client.state());
-    PRINTLN(F(" try again in 5 seconds"));
-    // Wait 5 seconds before retrying
-    delay(5000);
+    PRINT(F("mencoba menyambungkan pada MQTT server..."));
+    // Attempt to connect
+    if (client.connect("ESP32Client-1"))
+    {
+      PRINTLN(F("tersambung!"));
+      // Subscribe
+      client.publish("MQTT_YUTUB_ESP32/led_output", "[0,0,0,0,0,0]");
+      client.subscribe("MQTT_YUTUB_ESP32/led_input");
+    }
+    else
+    {
+      PRINT(F("gagal tersambung pada MQTT server!, rc="));
+      PRINT(client.state());
+      PRINTLN(F(" try again in 5 seconds"));
+      // Wait 5 seconds before retrying
+      delay(5000);
+    }
   }
 }
 
@@ -133,9 +142,9 @@ unsigned int baca_jarak_hcsr()
   digitalWrite(TRIG_PIN, LOW);
 
   unsigned long duration = micros();
-  WAIT_READ_PIN(ECHO_PIN, duration);
+  WAIT_READ_PIN(!, ECHO_PIN, duration);
   duration = micros();
-  WAIT_READ_PIN(ECHO_PIN, duration);
+  WAIT_READ_PIN(, ECHO_PIN, duration);
 
-  return (unsigned int)((micros() - duration) / 57);
+  return (unsigned int)((micros() - duration) / 56);
 }

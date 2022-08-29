@@ -20,9 +20,9 @@
 
 #define ECHO_PIN 22
 #define TRIG_PIN 23
-#define TIME_OUT 3000
+#define TIME_OUT 5000
 #define CM_VECTOR 57
-#define WAIT_READ_PIN(_PIN, _DUR) while (!digitalRead(_PIN) && (micros() - _DUR ) <= TIME_OUT)
+#define WAIT_READ_PIN(EXPR,_PIN, _DUR) while (EXPR(digitalRead(_PIN)) && (micros() - _DUR ) <= TIME_OUT)
 
 #if !defined(SSID_NAME) && !defined(SSID_PASSWORD)
 // ssid dan password wifi yang akan tersambung dengan esp32 ini
