@@ -47,6 +47,12 @@ void loop()
       utoa(baca_jarak_hcsr(), buff, 10);
       client.publish("MQTT_YUTUB_ESP32/jarak", (const uint8_t *)buff, sizeof(buff), false);
 
+      char buff2[20];
+      snprintf(buff2, sizeof(buff2), "[%d,%d,%d,%d,%d,%d]",
+               status_led[0], status_led[1], status_led[2],
+               status_led[3], status_led[4], status_led[5]);
+      client.publish("MQTT_YUTUB_ESP32/led_output", (const uint8_t *)buff2, sizeof(buff2), false);
+
       millis_done = mill;
     }
   }
@@ -60,7 +66,7 @@ void setup_wifi()
 {
   /// F() adalah untuk string literal
   PRINT(F("Connecting to "));
-  PRINTLN(ssid);
+  PRINTLN(SSID_NAME);
 
   WiFi.begin(SSID_NAME, SSID_PASWORD);
   WiFi.begin();
@@ -84,28 +90,18 @@ void callback(char *topic, byte *message, unsigned int length)
 
   if ((strncmp(topic, "MQTT_YUTUB_ESP32/led_input", 26)) == 0)
   {
-    char *msg = (char *)malloc(length);
-    memcpy(msg, message, length);
-    if (sscanf(msg, "[%d,%d,%d,%d,%d,%d]",
-               &status_led[0],
-               &status_led[1],
-               &status_led[2],
-               &status_led[3],
-               &status_led[4],
-               &status_led[5]) == JUMLAH_LED)
+    if (sscanf((char *)message, "[%d,%d,%d,%d,%d,%d]",
+               &status_led[0], &status_led[1], &status_led[2],
+               &status_led[3], &status_led[4], &status_led[5]) == JUMLAH_LED)
     {
       PRINT(F("msg arrived no topic: "));
       PRINTLN(topic);
-      PRINT(F("status: "));
-      PRINTLN(msg);
 
       for (size_t i = 0; i < JUMLAH_LED; i++)
       {
         digitalWrite(ledPin[i], status_led[i]);
       }
-      client.publish("MQTT_YUTUB_ESP32/led_output", msg, length);
     }
-    free(msg);
   }
 }
 
@@ -115,11 +111,10 @@ void reconnect_mqtt_server()
   {
     PRINT(F("mencoba menyambungkan pada MQTT server..."));
     // Attempt to connect
-    if (client.connect("ESP32Client-1"))
+    if (client.connect("ESP32Client-69420"))
     {
       PRINTLN(F("tersambung!"));
       // Subscribe
-      client.publish("MQTT_YUTUB_ESP32/led_output", "[0,0,0,0,0,0]");
       client.subscribe("MQTT_YUTUB_ESP32/led_input");
     }
     else
