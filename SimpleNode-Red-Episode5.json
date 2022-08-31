@@ -1,0 +1,736 @@
+[
+    {
+        "id": "3bf16412eaa5c25f",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "95ad29d0d060f67f",
+        "type": "mqtt in",
+        "z": "3bf16412eaa5c25f",
+        "name": "subscribe status led",
+        "topic": "MQTT_YUTUB_ESP32/led_output",
+        "qos": "2",
+        "datatype": "utf8",
+        "broker": "30d8f73ac38c3eb6",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 130,
+        "y": 360,
+        "wires": [
+            [
+                "27e32ff680f365e1"
+            ]
+        ]
+    },
+    {
+        "id": "0df159d9922e6019",
+        "type": "mqtt out",
+        "z": "3bf16412eaa5c25f",
+        "name": "output status led to ESP32",
+        "topic": "MQTT_YUTUB_ESP32/led_input",
+        "qos": "0",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "30d8f73ac38c3eb6",
+        "x": 1280,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "27e32ff680f365e1",
+        "type": "function",
+        "z": "3bf16412eaa5c25f",
+        "name": "on events payload",
+        "func": "// context\n// flow\n// global\n\nconsole.log(msg);\n\nvar status_led = flow.get(\"STATUS_LED\");\n\nstatus_led = msg.payload\n    .match(/(?<=\\[)\\d+.*(?=\\])/)[0]\n    .split(',')\n    .map((item) => parseInt(item, 10));\n\nconsole.log(\"payload status_led: \", status_led);\n\nflow.set(\"STATUS_LED\", status_led);\n\nreturn status_led.map((item) => {\n    return { payload: item };\n});\n\n",
+        "outputs": 6,
+        "noerr": 0,
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\nflow.set(\"STATUS_LED\", [0, 0, 0, 0, 0, 0]);",
+        "finalize": "// Code added here will be run when the\n// node is being stopped or re-deployed.\nflow.set(\"STATUS_LED\", [0, 0, 0, 0, 0, 0]);",
+        "libs": [],
+        "x": 410,
+        "y": 360,
+        "wires": [
+            [
+                "c9866b6cc87a8623"
+            ],
+            [
+                "57a751acacf90036"
+            ],
+            [
+                "c195679fb9c6c70f"
+            ],
+            [
+                "846b768d6106970d"
+            ],
+            [
+                "c896a1734ce3dfcf"
+            ],
+            [
+                "ac9b44ee96cdd308"
+            ]
+        ]
+    },
+    {
+        "id": "c9866b6cc87a8623",
+        "type": "ui_led",
+        "z": "3bf16412eaa5c25f",
+        "order": 1,
+        "group": "17b24215023e8181",
+        "width": 0,
+        "height": 0,
+        "label": "led1",
+        "labelPlacement": "left",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#d4d4d4",
+                "value": "0",
+                "valueType": "num"
+            },
+            {
+                "color": "#10d510",
+                "value": "1",
+                "valueType": "num"
+            }
+        ],
+        "allowColorForValueInMessage": false,
+        "shape": "circle",
+        "showGlow": true,
+        "name": "led1",
+        "x": 610,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "57a751acacf90036",
+        "type": "ui_led",
+        "z": "3bf16412eaa5c25f",
+        "order": 2,
+        "group": "17b24215023e8181",
+        "width": 0,
+        "height": 0,
+        "label": "led2",
+        "labelPlacement": "left",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#d4d4d4",
+                "value": "0",
+                "valueType": "num"
+            },
+            {
+                "color": "#10d510",
+                "value": "1",
+                "valueType": "num"
+            }
+        ],
+        "allowColorForValueInMessage": false,
+        "shape": "circle",
+        "showGlow": true,
+        "name": "led2",
+        "x": 630,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "c195679fb9c6c70f",
+        "type": "ui_led",
+        "z": "3bf16412eaa5c25f",
+        "order": 3,
+        "group": "17b24215023e8181",
+        "width": 0,
+        "height": 0,
+        "label": "led3",
+        "labelPlacement": "left",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#d4d4d4",
+                "value": "0",
+                "valueType": "num"
+            },
+            {
+                "color": "#10d510",
+                "value": "1",
+                "valueType": "num"
+            }
+        ],
+        "allowColorForValueInMessage": false,
+        "shape": "circle",
+        "showGlow": true,
+        "name": "led3",
+        "x": 650,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "846b768d6106970d",
+        "type": "ui_led",
+        "z": "3bf16412eaa5c25f",
+        "order": 4,
+        "group": "17b24215023e8181",
+        "width": 0,
+        "height": 0,
+        "label": "led4",
+        "labelPlacement": "left",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#d4d4d4",
+                "value": "0",
+                "valueType": "num"
+            },
+            {
+                "color": "#10d510",
+                "value": "1",
+                "valueType": "num"
+            }
+        ],
+        "allowColorForValueInMessage": false,
+        "shape": "circle",
+        "showGlow": true,
+        "name": "led4",
+        "x": 650,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "c896a1734ce3dfcf",
+        "type": "ui_led",
+        "z": "3bf16412eaa5c25f",
+        "order": 5,
+        "group": "17b24215023e8181",
+        "width": 0,
+        "height": 0,
+        "label": "led5",
+        "labelPlacement": "left",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#d4d4d4",
+                "value": "0",
+                "valueType": "num"
+            },
+            {
+                "color": "#10d510",
+                "value": "1",
+                "valueType": "num"
+            }
+        ],
+        "allowColorForValueInMessage": false,
+        "shape": "circle",
+        "showGlow": true,
+        "name": "led5",
+        "x": 630,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "ac9b44ee96cdd308",
+        "type": "ui_led",
+        "z": "3bf16412eaa5c25f",
+        "order": 6,
+        "group": "17b24215023e8181",
+        "width": 0,
+        "height": 0,
+        "label": "led6",
+        "labelPlacement": "left",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#d4d4d4",
+                "value": "0",
+                "valueType": "num"
+            },
+            {
+                "color": "#10d510",
+                "value": "1",
+                "valueType": "num"
+            }
+        ],
+        "allowColorForValueInMessage": false,
+        "shape": "circle",
+        "showGlow": true,
+        "name": "led6",
+        "x": 610,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "1510af52597b33b5",
+        "type": "ui_switch",
+        "z": "3bf16412eaa5c25f",
+        "name": "switch led1",
+        "label": "switch led1",
+        "tooltip": "switch led1",
+        "group": "70ccf350c254c80e",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "0",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 750,
+        "y": 260,
+        "wires": [
+            [
+                "95db2e52335383a1"
+            ]
+        ]
+    },
+    {
+        "id": "cfbec8d4d2104355",
+        "type": "ui_switch",
+        "z": "3bf16412eaa5c25f",
+        "name": "switch led2",
+        "label": "switch led2",
+        "tooltip": "switch led2",
+        "group": "70ccf350c254c80e",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "1",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 770,
+        "y": 300,
+        "wires": [
+            [
+                "95db2e52335383a1"
+            ]
+        ]
+    },
+    {
+        "id": "f8d147014abb360d",
+        "type": "ui_switch",
+        "z": "3bf16412eaa5c25f",
+        "name": "switch led3",
+        "label": "switch led3",
+        "tooltip": "switch led3",
+        "group": "70ccf350c254c80e",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "2",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 790,
+        "y": 340,
+        "wires": [
+            [
+                "95db2e52335383a1"
+            ]
+        ]
+    },
+    {
+        "id": "06ea8a00f6b957d3",
+        "type": "ui_switch",
+        "z": "3bf16412eaa5c25f",
+        "name": "switch led4",
+        "label": "switch led4",
+        "tooltip": "switch led4",
+        "group": "70ccf350c254c80e",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "3",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 790,
+        "y": 380,
+        "wires": [
+            [
+                "95db2e52335383a1"
+            ]
+        ]
+    },
+    {
+        "id": "4bb4909962a9a90b",
+        "type": "ui_switch",
+        "z": "3bf16412eaa5c25f",
+        "name": "switch led5",
+        "label": "switch led5",
+        "tooltip": "switch led5",
+        "group": "70ccf350c254c80e",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "4",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 770,
+        "y": 420,
+        "wires": [
+            [
+                "95db2e52335383a1"
+            ]
+        ]
+    },
+    {
+        "id": "3e1f656191400d28",
+        "type": "ui_switch",
+        "z": "3bf16412eaa5c25f",
+        "name": "switch led6",
+        "label": "switch led6",
+        "tooltip": "switch led6",
+        "group": "70ccf350c254c80e",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "5",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 750,
+        "y": 460,
+        "wires": [
+            [
+                "95db2e52335383a1"
+            ]
+        ]
+    },
+    {
+        "id": "95db2e52335383a1",
+        "type": "function",
+        "z": "3bf16412eaa5c25f",
+        "name": "send payload",
+        "func": "var status_led = flow.get(\"STATUS_LED\");\n\nstatus_led[Number(msg.topic)] = msg.payload;\n\nflow.set(\"STATUS_LED\", status_led);\n\nreturn {payload: status_led};",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1030,
+        "y": 360,
+        "wires": [
+            [
+                "0df159d9922e6019"
+            ]
+        ]
+    },
+    {
+        "id": "3aa550e2e489ce0c",
+        "type": "mqtt in",
+        "z": "3bf16412eaa5c25f",
+        "name": "subscribe jarak",
+        "topic": "MQTT_YUTUB_ESP32/jarak",
+        "qos": "0",
+        "datatype": "utf8",
+        "broker": "30d8f73ac38c3eb6",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 120,
+        "y": 560,
+        "wires": [
+            [
+                "a1ad4ab199db5e78"
+            ]
+        ]
+    },
+    {
+        "id": "a1ad4ab199db5e78",
+        "type": "function",
+        "z": "3bf16412eaa5c25f",
+        "name": "jarak controlller",
+        "func": "var date = Date.now();\n\nvar chart_data = context.get(\"chart_data\") || [{\n    series: [\"jarak\", \"tinggi\"],\n    data: [\n        [\n            { \"x\": date, \"y\": 0 },\n        ],\n        [\n            { \"x\": date, \"y\": 0 },\n        ]\n    ],\n    labels: [\"\"]\n}];\nvar data = parseInt(msg.payload, 10);\nconsole.log(\"payload jarak: \", data);\n\nchart_data[0].data[0].push({ \"x\": date, \"y\": data });\nchart_data[0].data[1].push({ \"x\": date, \"y\": (200 - data)});\n\ncontext.set(\"chart_data\", chart_data);\nmsg.payload = chart_data;\nreturn [msg, {payload: 200 - data}, {payload: data}];",
+        "outputs": 3,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 560,
+        "wires": [
+            [
+                "bd2a01b464add367"
+            ],
+            [
+                "dfcfde1ccab16e4e"
+            ],
+            [
+                "11430eeebb6671fd"
+            ]
+        ]
+    },
+    {
+        "id": "11430eeebb6671fd",
+        "type": "ui_gauge",
+        "z": "3bf16412eaa5c25f",
+        "name": "gauge jarak",
+        "group": "d3f7374089e5bdfa",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "wave",
+        "title": "tinggi air",
+        "label": "cm",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "200",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "60",
+        "seg2": "150",
+        "className": "",
+        "x": 630,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "bd2a01b464add367",
+        "type": "ui_chart",
+        "z": "3bf16412eaa5c25f",
+        "name": "chart jarak",
+        "group": "85ce9a8c4ae5edbf",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "Chart Sensor Jarak Hcsr",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": true,
+        "ymin": "0",
+        "ymax": "200",
+        "removeOlder": 1,
+        "removeOlderPoints": "1000",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": true,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 630,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "dfcfde1ccab16e4e",
+        "type": "ui_gauge",
+        "z": "3bf16412eaa5c25f",
+        "name": "gauge jarak dai sensor",
+        "group": "96f58b1a72a9e126",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "jarak dari sensor",
+        "label": "cm",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "200",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "60",
+        "seg2": "150",
+        "className": "",
+        "x": 660,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "99c89ce09c746169",
+        "type": "ui_spacer",
+        "z": "3bf16412eaa5c25f",
+        "name": "spacer",
+        "group": "96f58b1a72a9e126",
+        "order": 2,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "30d8f73ac38c3eb6",
+        "type": "mqtt-broker",
+        "name": "ESP32_YUTUB_IOT",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "17b24215023e8181",
+        "type": "ui_group",
+        "name": "LED",
+        "tab": "fa5037ca9de1a8d8",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "70ccf350c254c80e",
+        "type": "ui_group",
+        "name": "switch led",
+        "tab": "fa5037ca9de1a8d8",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "d3f7374089e5bdfa",
+        "type": "ui_group",
+        "name": "gauge_jarak",
+        "tab": "fa5037ca9de1a8d8",
+        "order": 3,
+        "disp": false,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "85ce9a8c4ae5edbf",
+        "type": "ui_group",
+        "name": "Chart Sensor Hcsr",
+        "tab": "fa5037ca9de1a8d8",
+        "order": 6,
+        "disp": false,
+        "width": "12",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "96f58b1a72a9e126",
+        "type": "ui_group",
+        "name": "gauge_sensor",
+        "tab": "fa5037ca9de1a8d8",
+        "order": 4,
+        "disp": false,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "fa5037ca9de1a8d8",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
