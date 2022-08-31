@@ -8,6 +8,7 @@
 ### clone repo ini, caranya:
 ```shell
 git clone https://github.com/RizalAchp/simple-mqtt-esp32.git
+```
 
 ### dan buka folder project pada visual studio code
 ```shell
